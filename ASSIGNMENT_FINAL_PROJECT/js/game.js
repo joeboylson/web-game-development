@@ -20,7 +20,29 @@ class Game {
     this.runnerWidth = 30;
     this.runnerHeight = 30;
 
-    this.runnerPositionX = 25;
+    //powerups
+    this.invisibleTimer = 0;
+    this.invisibleColor = '#ff0099';
+    this.invisible = { 
+      name: 'invisible', 
+      color: this.invisibleColor, 
+      isPowerUp: true,
+      effect: (obstacle) => {
+        this.invisibleTimer = 60*7;
+        obstacle.keepalive = false;
+      }
+    }
+    this.coin = { 
+      name: 'coin', 
+      color: '#DAA520', 
+      isPowerUp: true,
+      effect: (obstacle) => {
+        this.score = this.score + 500;
+        obstacle.keepalive = false;
+      }
+    }
+
+    this.runnerPositionX = 100;
     this.runnerPositionY = 0;
     this.runnerSpeed = 0;
 
@@ -68,10 +90,17 @@ class Game {
     }
 
     // draw runner
-    this.context.fillStyle = this.antiGravity ? 'yellow' : 'blue'
     this.context.shadowBlur = 40;
-    this.context.shadowColor = "white";
-    this.context.fillRect(this.runnerPositionX, this.runnerPositionY, this.runnerWidth, this.runnerHeight);
+    if (this.invisibleTimer > 0) {
+      this.context.strokeStyle = this.invisibleColor;
+      this.context.shadowColor = this.invisibleColor;
+      this.context.strokeRect(this.runnerPositionX, this.runnerPositionY, this.runnerWidth, this.runnerHeight);
+    }
+    else {
+      this.context.fillStyle = this.antiGravity ? 'yellow' : 'blue'
+      this.context.shadowColor = "white";
+      this.context.fillRect(this.runnerPositionX, this.runnerPositionY, this.runnerWidth, this.runnerHeight);
+    }
 
     // manage obstacles
     this.obstacleTick();
@@ -80,7 +109,6 @@ class Game {
 
   triangulateObject (object) {
     let triangles = object.map((point, index) => {
-
       // there's gotta be an easier way to do this
 
       let pointOne = object[index]
@@ -98,7 +126,19 @@ class Game {
 
   } 
 
+  playerIsInvulnerable() {
+    return (this.invisibleTimer > 0)
+  }
+
   detectRunnerCollision (obstacle) {
+
+    if (this.playerIsInvulnerable()) {
+      return;
+    }
+
+    if (!obstacle.keepalive) {
+      return;
+    }
 
     let runner = [
       [this.runnerPositionX, this.runnerPositionY],
@@ -109,34 +149,51 @@ class Game {
     ]
 
     let runnerTriangles = this.triangulateObject(runner)
-    let obstacleTriangles = this.triangulateObject(obstacle)
+    let obstacleTriangles = this.triangulateObject(obstacle.points)
     for (let rt of runnerTriangles) {
       for (let ot of obstacleTriangles) {
         if( greinerHormann.intersection(rt, ot) ) {
-          this.isLost = true;
+          return obstacle.effect(obstacle)
         }
       }
     }
-
   }
 
   obstacleTick () {
     
     if (this.obstacleTimer <= 0) {
       this.generateObstacle();
-      this.obstacleTimer = 30 - this.score/1000;
+      this.obstacleTimer = 18 - this.score/2000;
     }
     else {
       this.obstacleTimer = this.obstacleTimer - 1;
     }
   }
 
+  getRandomPowerUp() {
+
+    let randomValue = Math.random()
+
+    if (randomValue < 0.9) {
+      return this.coin;
+    }
+    else {
+      return this.invisible;
+    }
+
+  }
+
   generateObstacle () {
+
+    let generatePowerUp = Math.random() > 0.5;
+    let defaultObstacle = { name: 'obstacle', color: 'red', isPowerUp: false, effect: () => this.isLost = true}
+
     let newObstacle = new Obstacle({
       context: this.context,
       canvasWidth: this.canvasWidth,
       canvasHeight: this.canvasHeight,
-      score: this.score
+      score: this.score,
+      obstacle: generatePowerUp ? this.getRandomPowerUp() : defaultObstacle
     })
 
     this.obstacles.push(newObstacle)
@@ -146,11 +203,15 @@ class Game {
     if (this.obstacles.length) {
       for (let obstacle of this.obstacles) {
         obstacle.tick()
-        this.detectRunnerCollision(obstacle.points)
+        this.detectRunnerCollision(obstacle)
       }
 
       this.obstacles = this.obstacles.filter(o => o.keepalive)
       this.writeScore()
+    }
+
+    if ( this.invisibleTimer > 0 ) {
+      this.invisibleTimer = this.invisibleTimer - 1;
     }
   }
   
