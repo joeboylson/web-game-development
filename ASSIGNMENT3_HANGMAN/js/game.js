@@ -38,11 +38,8 @@ class Game {
 
 
   getWord(difficulty) {
-    return axios.get(`/word?difficulty=${difficulty}`)
+    return axios.get(`https://hangman-api.lively.software/?difficulty=${difficulty}`)
     .then(function (response) {
-
-      console.log(response.data)
-
       return response.data.toUpperCase();
     })
     .catch(function (error) {
