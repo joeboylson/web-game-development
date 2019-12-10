@@ -9,9 +9,6 @@
 
   <!-- scripts -->
   <script src="https://cdn.rawgit.com/w8r/GreinerHormann/master/dist/greiner-hormann.min.js"></script>
-  <!-- <script src="https://unpkg.com/tinyqueue@2.0.0/tinyqueue.min.js"></script> -->
-  <!-- <script src="./js/polylabel.js"></script> -->
-
   <script src="./js/game.js"></script>
   <script src="./js/obstacle.js"></script>
   <script src="./js/main.js"></script>
@@ -25,8 +22,82 @@
   <div id="score-text-wrapper">
     <h2 id="score-text">0</h2>
   </div>
+
+  <div id="pause-button">
+    <p>Pause [Esc]</p>
+  </div>
+
+  <div id='pause-screen'>
+    <h1>PAUSED</h1>
+    <p>Click anywhere to resume</p>
+  </div>
+
+  <div id='start-screen' class='show-start-screen'>
+    
+    <div id='game-title'>
+      <h1>GRAVITY</h1>
+    </div>
+
+    <div id='instructions'>
+
+      <div id='objective'>
+        <h3>OBJECTIVE</h3>
+        <p>
+          Avoid the obstacles by switching gravity
+          using the spacebar or simply clicking the screen.
+        </p>
+      </div>
+
+      <div id='obstacle'>
+        <h3>OBSTACLES</h3>
+        <p>
+          The obstacles are marked in red.
+        </p>
+
+        <span id='red'></span>
+      </div>
+
+      <div id='powerups'>
+        <h3>POWERUPS</h3>
+        <p>
+          There are two items you can pick up in the game:          
+        </p>
+        <strong>Coin</strong>
+        <span id='coin'></span>
+        <p>
+          A coin will add 500 points to your current
+          score.
+        </p>
+        <strong>Invisibility</strong>
+        <span id='invisibility'></span>
+        <p>
+          Invisibility will allow you to pass through
+          all objects with no effects.
+        </p>
+      </div>
+
+    </div>
+
+    <div id='click-to-start'>
+      <p>Click anywhere of hit [SPACE] to start the game</p>
+    </div>
+
+  </div>
+
+  <div id='lose-screen'>
+    <div id='lose-message'>
+      <h1>You Lose.</h1>
+    </div>
+    <div>
+      <p>Your score:</p>
+      <h3 id='final-score-text'></h3>
+    </div>
+    <div>
+      <p>Click anywhere to play again.</p>
+    </div>
+  </div>
+
   <canvas id='canvas'></canvas>
-  <button id='gravity-switch'>SWITCH</button>
 </body>
 
 </html>

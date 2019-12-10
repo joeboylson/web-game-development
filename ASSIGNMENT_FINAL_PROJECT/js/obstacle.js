@@ -24,6 +24,20 @@ class Obstacle {
 
     this.points = [];
 
+    if (this.obstacleType == 'barrier-top') {
+      this.width = 1000000000000;
+      this.height = 25;
+      this.y = canvasHeight-25;
+      this.speed = 1;
+    }
+
+    if (this.obstacleType == 'barrier-bottom') {
+      this.width = 1000000000000;
+      this.height = 25;
+      this.y = 0;
+      this.speed = 1;
+    }
+
     if (this.isPowerUp) {
       this.points = [
         [this.x, this.y],
@@ -42,12 +56,14 @@ class Obstacle {
         [this.x, this.y]
       ]
     }
-
-    this.rotationSpeed = 1
   }
 
   tick () {
-    if (this.points[0][0] <= 0 - this.canvasWidth) {
+    if (
+      this.points[0][0] <= 0 - this.canvasWidth && 
+      this.obstacleType !== 'barrier-top' &&
+      this.obstacleType !== 'barrier-bottom'
+    ) {
       this.keepalive = false
     }
 
@@ -58,8 +74,6 @@ class Obstacle {
 
     this.context.moveTo(...this.points[0]);
 
-    // https://stackoverflow.com/questions/20104611/find-new-coordinates-of-a-point-after-rotation
-    // move points
     this.points = this.points.map(point => {
       let newPoint = [
         point[0] - this.speed, 

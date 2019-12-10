@@ -1,16 +1,28 @@
 class Game {
   constructor () {
 
+    // game status
+    this.isStarted = false;
     this.isLost = false;
+    this.isPaused = false;
+
+    // barriers
+    this.barrierDeployScore = 3000;
+    this.barrierTopDeployed = false;
+    this.barrierBottomDeployed = false;
 
     // canvas
-    this.canvasHeight = window.innerWidth/3;
+    this.canvasHeight = window.innerHeight;
     this.canvasWidth = window.innerWidth;
     this.canvas = document.getElementById('canvas');
     this.canvas.width = this.canvasWidth;
     this.canvas.height = this.canvasHeight;
 
     this.context = this.canvas.getContext("2d");
+
+    window.addEventListener('resize', () => {
+      this.isPaused = true;
+    })
 
     // score
     this.score = 0;
@@ -32,6 +44,7 @@ class Game {
         obstacle.keepalive = false;
       }
     }
+
     this.coin = { 
       name: 'coin', 
       color: '#DAA520', 
@@ -56,8 +69,24 @@ class Game {
   }
 
   switchGravity() {
-    this.antiGravity = this.antiGravity ? false : true
-    this.runnerSpeed = 0;
+    if (!this.isPaused) {
+      this.antiGravity = this.antiGravity ? false : true
+      this.runnerSpeed = 0;
+    }
+  }
+  
+  setStart (bool) {
+    this.isStarted = bool;
+  }
+
+  setPause (bool) {
+    if (this.isStarted) {  
+      this.isPaused = bool;
+    }
+  }
+
+  togglePause () {
+    this.setPause(!this.isPaused);
   }
 
   clear () {
@@ -109,7 +138,6 @@ class Game {
 
   triangulateObject (object) {
     let triangles = object.map((point, index) => {
-      // there's gotta be an easier way to do this
 
       let pointOne = object[index]
       let pointTwo = object[index + 1] || object[ (index + 1) - (object.length) ]
@@ -123,7 +151,6 @@ class Game {
     })
 
     return triangles
-
   } 
 
   playerIsInvulnerable() {
@@ -171,6 +198,26 @@ class Game {
   }
 
   getRandomPowerUp() {
+
+    if (!this.barrierTopDeployed && this.score > this.barrierDeployScore) {
+      this.barrierTopDeployed = true;
+      return {
+        name: 'barrier-top',
+        color: 'red',
+        isPowerUp: false,
+        effect: () => this.isLost = true
+      }
+    }
+
+    if (!this.barrierBottomDeployed && this.score > this.barrierDeployScore) {
+      this.barrierBottomDeployed = true;
+      return {
+        name: 'barrier-bottom',
+        color: 'red',
+        isPowerUp: false,
+        effect: () => this.isLost = true
+      }
+    }
 
     let randomValue = Math.random()
 

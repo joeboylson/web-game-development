@@ -1,6 +1,9 @@
-# collision
+- [x] pausing game
+- [x] game screen size
+- [x] pause game if in portrait mode
+- [x] top & bottom borders at 1500/2000
+- [ ] start/stop screens
 
-I don't want to just use squares:
-  - use for polygons, circles, other irregular shapes
+---
 
-  >>> https://cdn.rawgit.com/w8r/GreinerHormann/master/dist/greiner-hormann.min.js
+- [ ] leaderboard?
