@@ -38,23 +38,18 @@ class Game {
 
 
   getWord(difficulty) {
-    return axios.get(`https://hangman-api.lively.software/?difficulty=${difficulty}`)
-    .then(function (response) {
-      return response.data.toUpperCase();
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
+    let wordInDifficulty = words.filter(word => { if (word.length <= difficulty && word.length > difficulty - 3 ) return word });
+    let randomWordInt = Math.floor(Math.random() * wordInDifficulty.length);
+    return wordInDifficulty[randomWordInt].toUpperCase()
   }
 
 
 
   setDifficulty(difficulty) {
-    this.getWord(difficulty).then(word => {
-      this.setBoard(word);
-      this.word = word;
-    })
-    this.difficultyScreen.classList.add('fade-up')
+    let word = this.getWord(difficulty)
+    this.setBoard(word);
+    this.word = word;
+    this.difficultyScreen.classList.add('fade-up') 
   }
 
 
