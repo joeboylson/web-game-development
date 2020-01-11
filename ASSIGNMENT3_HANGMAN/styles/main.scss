@@ -77,15 +77,15 @@ body {
       border-radius: var(--border-radius);
     }
 
-    [data-difficulty='easy'] {
+    [data-difficulty='5'] {
       background-color: var(--green);
     }
 
-    [data-difficulty='medium'] {
+    [data-difficulty='8'] {
       background-color: var(--yellow);
     }
 
-    [data-difficulty='hard'] {
+    [data-difficulty='13'] {
       background-color: var(--red);
     }
   }
