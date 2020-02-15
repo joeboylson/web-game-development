@@ -13,6 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "yarn": "^1.19.1"
+    "yarn": "^1.22.0"
   }
 }
